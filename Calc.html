@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+  <body>
+          <div class="card-body">
+            <h5 class="card-title text-white">Insurance Information</h5>
+            <p class="card-text">
+              Individuals who are 60 years old will pay 10% less than they did the previous year,<br> and with each year will pay $7 less.
+            </p>
+          </div>
+
+    <br>
+    <h1 id="mainHeading">Calculate Insurance Rate!</h1>
+    <br>
+    <input type="text" id="num" placeholder="Enter Age"/>      
+
+    
+    <button id="calc" class="btn btn-secondary">Calculate</button>
+    <button id="clr" class="btn btn-secondary">Clear</button>
+    
+    <p id="calcNum"></p> 
+    <br>
+
+    <canvas id="insuranceChart" width="400" height="100"></canvas>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var insurancePrices = [];
+            for (var age = 20; age <= 100; age++) {
+                var insurance;
+
+                if (age < 60) {
+                    insurance = (5 * age) + 300;
+                } else if (age >= 60 && age <= 100) {
+                    
+                    var decreaseFactor = age - 60;
+                    insurance = 535.5 - (decreaseFactor * 7);
+                }
+
+                insurancePrices.push(insurance);
+            }
+
+        
+            var ctx = document.getElementById('insuranceChart').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Array.from({ length: 81 }, (_, i) => i + 20), 
+                    datasets: [{
+                        label: 'Insurance Prices',
+                        data: insurancePrices,
+                        backgroundColor: 'rgba(61, 52, 8, 1)', 
+                        borderColor: 'rgba(255, 255, 255, 1)',
+                        borderWidth: 1,
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Insurance Price ($)',
+                                color: 'white'
+                            },
+                            ticks:{
+                                color:'white'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Age',
+                                color: 'white'
+                            },
+                            ticks:{
+                                color: 'white'
+                            }
+                        }
+                    }
+                }
+            }); 
+
+            $("#calc").click(function () {
+                var num = parseInt($("#num").val());
+                if (!isNaN(num)) {
+                    var insurance = (5 * num) + 300;
+                    $("#calcNum").hide().text("Insurance: $" + insurance).fadeIn(1000);
+                    if (num >= 60 && num <= 100){
+                        var decreaseFactor = num - 60;
+                        insurance = 535.5 - (decreaseFactor * 7);
+                        $("#calcNum").hide().text("Insurance: $" + insurance).fadeIn(1000);
+                    }
+                } else {
+                    $("#calcNum").hide().text("Please enter a valid age.").fadeIn(1000);
+                }
+            });
+
+            $("#clr").click(function(){
+                $("#calcNum").fadeOut(1000);
+                $("#num").val('');
+            });
+
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+  </body>
+</html>
+
